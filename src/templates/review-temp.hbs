@@ -1,0 +1,32 @@
+<div class="review">
+    <header class="review__header">
+        <div class="review__header-address">{{address}}</div>
+        <a href="#" class="review__header-link">
+            <div class="review__header-close"></div>
+        </a>
+    </header>
+    <div class="review__body">
+        <ul class="review__list">
+            {{#each reviews}}
+                <li class="review__item">
+                    <div class="review__item-header">
+                        <span class="review__item-name">{{name}}</span>
+                        <span class="review__item-place">{{place}}</span>
+                    </div>
+                    <p class="review__item-text">
+                        {{text}}
+                    </p>
+                </li>
+            {{/each}}
+        </ul>
+        <form class="review__form form" method="post" id="form">
+            <h2 class="form__header">ВАШ ОТЗЫВ</h2>
+            <input class="form__input" type="text" placeholder="Ваше имя">
+            <input class="form__input" type="text" placeholder="Укажите место">
+            <textarea class="form__textarea" placeholder="Поделитесь впечатлениями"></textarea>
+            <div class="form__footer">
+                <input class="form__submit" type="submit" value="Добавить">
+            </div>            
+        </form>
+    </div>
+</div>

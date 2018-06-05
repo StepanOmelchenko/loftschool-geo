@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 
@@ -11,8 +12,10 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/templates/index.hbs'
-        })
+            template: './src/templates/index.hbs',
+            filename: 'index.html'
+        }),
+        new CleanWebpackPlugin('dist')
     ],
     module: {
         rules: [
@@ -37,9 +40,13 @@ module.exports = {
                         loader: 'sass-loader'
                     }
                 ]
-            },
+            }/* ,
             {
                 test: /\.handlebars/,
+                loader: 'handlebars-loader'
+            } */,
+            {
+                test: /\.hbs/,
                 loader: 'handlebars-loader'
             }
         ]
