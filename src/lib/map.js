@@ -1,7 +1,6 @@
 import View from './view.js';
-//import temp from '../templates/review-temp.hbs';
 
-var mapTable = document.querySelector('#map');
+const mapTable = document.querySelector('#map');
 
 export default () => {
     let myMap;
@@ -45,19 +44,14 @@ export default () => {
 
                             myMap.geoObjects.add(icon);
                             clusterer.add(icon);
-                            //mapTable.removeChild(container);
-
                             View.destroyChild(mapTable, container);
                         });
 
                         closeBtn.addEventListener('click', (e) => {
                             e.preventDefault();
-                            console.log('destroy');
                             View.destroyChild(mapTable, container);
                         });
                     });
-                    
-                
             });
 
             function getAddress(coords) {

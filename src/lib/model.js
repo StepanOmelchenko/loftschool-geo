@@ -1,21 +1,19 @@
+const storage = localStorage;
+
 export default {
-    getData() {
-        return [
-            {
-                address: 'Гойколово',
-                reviews: [
-                    {
-                        name: 'Павел',
-                        place: 'Бекер',
-                        text: 'Сосисоны тут!!!'
-                    },
-                    {
-                        name: 'Душкин',
-                        place: 'Бекер',
-                        text: 'Сосисоны ем!!!'
-                    }
-                ]
-            }
-        ]
+    getReviews() {
+        let reviews = [];
+
+        if (storage.geoStorage) {
+            reviews = JSON.parse(storage.geoStorage);
+        }
+
+        return reviews;
+    },
+
+    saveReviews(reviews) {
+        let store = JSON.stringify(reviews);
+
+        storage.setItem('geoStorage', store);
     }
 };
