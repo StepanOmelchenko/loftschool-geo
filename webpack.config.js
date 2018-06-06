@@ -40,11 +40,7 @@ module.exports = {
                         loader: 'sass-loader'
                     }
                 ]
-            }/* ,
-            {
-                test: /\.handlebars/,
-                loader: 'handlebars-loader'
-            } */,
+            },
             {
                 test: /\.hbs/,
                 loader: 'handlebars-loader'
