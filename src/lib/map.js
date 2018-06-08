@@ -1,9 +1,14 @@
 import View from './view.js';
+import Model from './model.js';
+import DND from './DND.js';
 
 const mapTable = document.querySelector('#map');
+DND.makeDND(mapTable);
 
 export default () => {
     let myMap;
+    let storage = Model.getReviews();
+    console.log(storage);
 
     return new Promise(resolve => ymaps.ready(resolve))
         .then(() => {
@@ -32,6 +37,7 @@ export default () => {
                     .then((address) => {
                         let container = View.renderReview(windowCoords, targetCoords, address);
                         
+                        container.draggable = true;
                         mapTable.appendChild(container);
 
                         let submitBtn = document.querySelector('#submit');
@@ -39,11 +45,12 @@ export default () => {
 
                         submitBtn.addEventListener('click', (e) => {
                             e.preventDefault();
-
+                            let formElements = [...document.querySelector('#form').elements];
                             let icon = new ymaps.Placemark(targetCoords, {}, { preset: 'islands#blueHomeCircleIcon' });
-
+                            
                             myMap.geoObjects.add(icon);
                             clusterer.add(icon);
+                            Model.saveReviews(address, formElements, storage, targetCoords);
                             View.destroyChild(mapTable, container);
                         });
 
