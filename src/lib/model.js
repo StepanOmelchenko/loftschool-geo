@@ -17,7 +17,10 @@ export default {
             let newReview = {};
             let date = new Date();
             let coords = [...targetCoords];
-            let parseDate = `${ date.getDate() }.${ date.getMonth() + 1 }.${ date.getFullYear() } ${ date.getHours()}:${ date.getMinutes() }:${ date.getSeconds() }`;
+            let dayZero = date.getDate() > 9 ? '' : '0';
+            let mounth = date.getMonth() + 1;
+            let mounthZero = mounth > 9 ? '' : '0'
+            let parseDate = `${ dayZero + date.getDate() }.${ mounthZero + mounth }.${ date.getFullYear() } ${ date.getHours()}:${ date.getMinutes() }:${ date.getSeconds() }`;
             
             form.forEach((elem) => {
                 if (elem.type != 'submit') {
@@ -45,7 +48,7 @@ export default {
         elemsWithSameAddress.forEach((elem) => {
             result.push(elem);
         });
-        
+
         return result;
     }
 };
