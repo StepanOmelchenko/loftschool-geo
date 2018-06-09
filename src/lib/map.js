@@ -17,10 +17,23 @@ export default (mapTable) => {
                 searchControlProvider: 'yandex#search'
             });
 
+            var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+                '<div class=ballon__content><h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>' +
+                '<a href="#" class=ballon__link data-coord="{{ properties.balloonContentCoords|raw }}">{{ properties.balloonContentLink|raw }}</a>' +
+                '<div class=ballon__body>{{ properties.balloonContentBody|raw }}</div>' +
+                '<div class=ballon__footer>{{ properties.balloonContentFooter|raw }}</div></div>'
+            );
+
             let clusterer = new ymaps.Clusterer({
                 preset: 'islands#invertedVioletClusterIcons',
                 clusterDisableClickZoom: true,
-                openBalloonOnClick: false
+                clusterOpenBalloonOnClick: true,
+                clusterBalloonContentLayout: 'cluster#balloonCarousel',
+                clusterBalloonItemContentLayout: customItemContentLayout,
+                clusterBalloonPanelMaxMapArea: 0,
+                clusterBalloonContentLayoutWidth: 200,
+                clusterBalloonContentLayoutHeight: 150,
+                clusterBalloonPagerSize: 15
             });
     
             myMap.geoObjects.add(clusterer);
@@ -44,10 +57,18 @@ export default (mapTable) => {
                     });
             }
 
-            function createIcon(coords) {
-                let icon = new ymaps.Placemark(coords, {}, { preset: 'islands#blueHomeCircleIcon' });
+            function createIcon(coords, review) {
+                let icon = new ymaps.Placemark(coords, {
+                    openBalloonOnClick: false,
+                    balloonContentHeader: review.place,
+                    balloonContentCoords: review.coords,
+                    balloonContentLink: review.address,
+                    balloonContentBody: review.text,
+                    balloonContentFooter: review.date
+                }, { preset: 'islands#blueHomeCircleIcon' });
                 
                 icon.events.add('click', (e) => {
+                    e.preventDefault();
                     let windowCoords = e.get('pagePixels');
                     let targetCoords = coords;
 
@@ -63,7 +84,7 @@ export default (mapTable) => {
 
             function createIcons(storage) {
                 storage.forEach((review) => {
-                    createIcon(review.coords);
+                    createIcon(review.coords, review);
                 });
             }
 
@@ -78,8 +99,8 @@ export default (mapTable) => {
                     let formElements = [...document.querySelector('#form').elements];
                     let newReview = Model.saveReviews(address, formElements, targetCoords);
 
-                    createIcon(targetCoords);
-                    View.addReview(container, newReview.reviews[0]);
+                    createIcon(targetCoords, newReview);
+                    View.addReview(container, newReview);
                 });
 
                 closeBtn.addEventListener('click', (e) => {

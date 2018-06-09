@@ -1,5 +1,4 @@
 import temp from '../templates/review-temp.hbs';
-import sliderTemp from '../templates/slider-temp.hbs';
 import singleReview from '../templates/single-review.hbs';
 
 const container = document.createElement('div');
@@ -22,7 +21,7 @@ export default {
     },
 
     addReview(container, review) {
-        console.log(review);
+        //console.log(review);
         let elemLi = document.createElement('li');
         elemLi.classList.add('review__item');
 
@@ -30,21 +29,9 @@ export default {
 
         if (container) {
             let reviewsList = document.querySelector('#reviews-list');
-            console.log(elemLi);
+            //console.log(elemLi);
             reviewsList.appendChild(elemLi);
         }
-    },
-
-    renderSlider(windowCoords, targetCoords, address, mapTable, reviews = []) {
-
-        slider.innerHTML = sliderTemp({ });
-
-        slider.style.left = windowCoords[0] + 'px';
-        slider.style.top = windowCoords[1] + 'px';
-        slider.draggable = true;
-        mapTable.appendChild(container);
-
-        return slider;
     },
 
     destroyChild(parent, child) {

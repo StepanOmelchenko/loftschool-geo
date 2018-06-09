@@ -14,7 +14,7 @@ export default {
         if (form) {
             let memoryStorage = this.getReviews();
             let storage = localStorage;
-            let formData = {};
+            //let formData = {};
             let newReview = {};
             let date = new Date();
             let coords = [...targetCoords];
@@ -23,27 +23,27 @@ export default {
             form.forEach((elem) => {
                 if (elem.type != 'submit') {
                     let name = elem.name;
-                    formData[name] = elem.value;
+                    newReview[name] = elem.value;
                     elem.value = '';
                 }
             });            
             
-            formData.date = parseDate;
-            formData.address = address;
-            
+            newReview.date = parseDate;
+            //formData.address = address;
+
             newReview.coords = [...coords];
             newReview.address = address;
-            newReview.reviews = [];
-            newReview.reviews.push(formData);
+            //newReview.reviews = [];
+            //newReview.reviews.push(formData);
             memoryStorage.push(newReview); 
 
             storage.setItem('geoStorage', JSON.stringify(memoryStorage));
-
+            console.log('Новый отзыв ', newReview);
             return newReview;
         }        
     },
 
-    searchSamePlace(address) {
+    /* searchSamePlace(address) {
         let reviews = this.getReviews();
         let sameElementPosition = 0;
         let result = reviews.find((review, index) => {
@@ -56,7 +56,7 @@ export default {
         });
         
         return sameElementPosition;
-    },
+    }, */
 
     searchReviewsByAdddress(address) {
         let reviews = this.getReviews();
@@ -64,9 +64,9 @@ export default {
         let result = [];
         
         elemsWithSameAddress.forEach((elem) => {
-            result.push(elem.reviews[0]);
+            result.push(elem);
         });
-
+        console.log('Элементы с тем же адресом ', result);
         return result;
     }
 };
