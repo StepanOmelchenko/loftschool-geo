@@ -1,11 +1,7 @@
 import View from './view.js';
 import Model from './model.js';
-import DND from './DND.js';
 
-const mapTable = document.querySelector('#map');
-DND.makeDND(mapTable);
-
-export default () => {
+export default (mapTable) => {
     let myMap;
     let storage = Model.getReviews();
     console.log(storage);
@@ -28,6 +24,7 @@ export default () => {
             });
     
             myMap.geoObjects.add(clusterer);
+            createIcons(storage);
 
             myMap.events.add('click', function (e) {
                 let windowCoords = e.get('pagePixels');
@@ -35,29 +32,7 @@ export default () => {
 
                 getAddress(targetCoords)
                     .then((address) => {
-                        let container = View.renderReview(windowCoords, targetCoords, address);
-                        
-                        container.draggable = true;
-                        mapTable.appendChild(container);
-
-                        let submitBtn = document.querySelector('#submit');
-                        let closeBtn = document.querySelector('#closeBtn');
-
-                        submitBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            let formElements = [...document.querySelector('#form').elements];
-                            let icon = new ymaps.Placemark(targetCoords, {}, { preset: 'islands#blueHomeCircleIcon' });
-                            
-                            myMap.geoObjects.add(icon);
-                            clusterer.add(icon);
-                            Model.saveReviews(address, formElements, storage, targetCoords);
-                            View.destroyChild(mapTable, container);
-                        });
-
-                        closeBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            View.destroyChild(mapTable, container);
-                        });
+                        createContainer(windowCoords, targetCoords, address);
                     });
             });
 
@@ -69,6 +44,53 @@ export default () => {
                     });
             }
 
-            return myMap;
+            function createIcon(coords) {
+                let icon = new ymaps.Placemark(coords, {}, { preset: 'islands#blueHomeCircleIcon' });
+                
+                icon.events.add('click', (e) => {
+                    let windowCoords = e.get('pagePixels');
+                    let targetCoords = coords;
+
+                    getAddress(targetCoords)
+                        .then((address) => {
+                            createContainer(windowCoords, targetCoords, address);
+                        });                    
+                });
+
+                myMap.geoObjects.add(icon);
+                clusterer.add(icon);
+            }
+
+            function createIcons(storage) {
+                storage.forEach((review) => {
+                    createIcon(review.coords);
+                });
+            }
+
+            function createContainer(windowCoords, targetCoords, address) {
+                let exsistReviews = Model.searchReviewsByAdddress(address);
+                let container = View.renderReview(windowCoords, targetCoords, address, mapTable, exsistReviews);                        
+                let submitBtn = document.querySelector('#submit');
+                let closeBtn = document.querySelector('#closeBtn');
+
+                submitBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let formElements = [...document.querySelector('#form').elements];
+                    let addReviewToStorage = Model.saveReviews(address, formElements, targetCoords);
+
+                    if (!addReviewToStorage.buldingHasReviews){
+                        createIcon(targetCoords);
+                    }
+                    
+                    View.destroyChild(mapTable, container);
+                });
+
+                closeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    View.destroyChild(mapTable, container);
+                });
+
+                return container;
+            }
         })    
 };

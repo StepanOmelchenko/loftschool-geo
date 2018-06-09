@@ -1,5 +1,7 @@
 import map from './map.js';
-import Model from './model.js';
-import View from './view.js';
+import DND from './DND.js';
 
-map();
+const mapTable = document.querySelector('#map');
+
+DND.makeDND(mapTable);
+map(mapTable);
