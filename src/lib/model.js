@@ -10,7 +10,7 @@ export default {
         return reviews;
     },
 
-    saveReviews(address, form, /* memoryStorage, */ targetCoords) {
+    saveReviews(address, form, targetCoords) {
         if (form) {
             let memoryStorage = this.getReviews();
             let storage = localStorage;
@@ -19,36 +19,27 @@ export default {
             let date = new Date();
             let coords = [...targetCoords];
             let parseDate = `${ date.getDate() }.${ date.getMonth() + 1 }.${ date.getFullYear() }`;
-            let sameElementPosition = this.searchSamePlace(address);
-            let result = {
-                buldingHasReviews: false
-            };
-
+            
             form.forEach((elem) => {
                 if (elem.type != 'submit') {
                     let name = elem.name;
                     formData[name] = elem.value;
+                    elem.value = '';
                 }
             });            
             
             formData.date = parseDate;
             formData.address = address;
-            if (sameElementPosition) {
-                memoryStorage[sameElementPosition].reviews.push(formData);
-                storage.setItem('geoStorage', JSON.stringify(memoryStorage));
-
-                result.buldingHasReviews = true;
-            } else {
-                newReview.coords = [...coords];
-                newReview.address = address;
-                newReview.reviews = [];
-                newReview.reviews.push(formData);
-                memoryStorage.push(newReview); 
-            }
+            
+            newReview.coords = [...coords];
+            newReview.address = address;
+            newReview.reviews = [];
+            newReview.reviews.push(formData);
+            memoryStorage.push(newReview); 
 
             storage.setItem('geoStorage', JSON.stringify(memoryStorage));
 
-            return result;
+            return newReview;
         }        
     },
 
@@ -69,11 +60,13 @@ export default {
 
     searchReviewsByAdddress(address) {
         let reviews = this.getReviews();
-        let result = reviews.find((review) => review.address == address);
+        let elemsWithSameAddress = reviews.filter((review) => review.address == address);
+        let result = [];
+        
+        elemsWithSameAddress.forEach((elem) => {
+            result.push(elem.reviews[0]);
+        });
 
-        if (result) {
-            return result.reviews
-        }
-        return [];
+        return result;
     }
 };

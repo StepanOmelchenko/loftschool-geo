@@ -69,9 +69,6 @@ export default (mapTable) => {
 
             function createContainer(windowCoords, targetCoords, address) {
                 let exsistReviews = Model.searchReviewsByAdddress(address);
-                if (exsistReviews.length > 1) { /// check
-                    console.log('много');
-                }
                 let container = View.renderReview(windowCoords, targetCoords, address, mapTable, exsistReviews);                        
                 let submitBtn = document.querySelector('#submit');
                 let closeBtn = document.querySelector('#closeBtn');
@@ -79,13 +76,10 @@ export default (mapTable) => {
                 submitBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     let formElements = [...document.querySelector('#form').elements];
-                    let addReviewToStorage = Model.saveReviews(address, formElements, targetCoords);
+                    let newReview = Model.saveReviews(address, formElements, targetCoords);
 
-                    if (!addReviewToStorage.buldingHasReviews){
-                        createIcon(targetCoords);
-                    }
-                    
-                    View.destroyChild(mapTable, container);
+                    createIcon(targetCoords);
+                    View.addReview(container, newReview.reviews[0]);
                 });
 
                 closeBtn.addEventListener('click', (e) => {
