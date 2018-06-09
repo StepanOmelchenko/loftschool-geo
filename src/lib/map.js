@@ -6,7 +6,7 @@ export default (mapTable) => {
     let myMap;
     let storage = Model.getReviews();
     let clusterer;
-    console.log(storage);
+    //console.log(storage);
 
     return new Promise(resolve => ymaps.ready(resolve))
         .then(() => {
@@ -40,7 +40,7 @@ export default (mapTable) => {
 
             myMap.events.add('click', (e) => {
                 let windowCoords = e.get('pagePixels');
-                let targetCoords = e.get('coords');
+                let targetCoords = e.get('coords');                      
 
                 getAddress(targetCoords)
                     .then((address) => {
@@ -51,7 +51,9 @@ export default (mapTable) => {
             mapTable.addEventListener('click', (e) => {
                 if (e.target.dataset.coord) {
                     let targetCoords = e.target.dataset.coord;
-                    let windowCoords = [e.clientX, e.clientY];
+                    let windowCoords = [e.clientX, e.clientY]; 
+
+                    clusterer.balloon.close();
 
                     getAddress(targetCoords)
                         .then((address) => {
