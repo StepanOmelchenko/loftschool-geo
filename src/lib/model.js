@@ -32,6 +32,7 @@ export default {
             });            
             
             formData.date = parseDate;
+            formData.address = address;
             if (sameElementPosition) {
                 memoryStorage[sameElementPosition].reviews.push(formData);
                 storage.setItem('geoStorage', JSON.stringify(memoryStorage));

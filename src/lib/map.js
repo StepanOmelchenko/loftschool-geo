@@ -26,7 +26,7 @@ export default (mapTable) => {
             myMap.geoObjects.add(clusterer);
             createIcons(storage);
 
-            myMap.events.add('click', function (e) {
+            myMap.events.add('click', (e) => {
                 let windowCoords = e.get('pagePixels');
                 let targetCoords = e.get('coords');
 
@@ -34,7 +34,7 @@ export default (mapTable) => {
                     .then((address) => {
                         createContainer(windowCoords, targetCoords, address);
                     });
-            });
+            });            
 
             function getAddress(coords) {
                 return ymaps.geocode(coords).then((res) => {
@@ -69,6 +69,9 @@ export default (mapTable) => {
 
             function createContainer(windowCoords, targetCoords, address) {
                 let exsistReviews = Model.searchReviewsByAdddress(address);
+                if (exsistReviews.length > 1) { /// check
+                    console.log('много');
+                }
                 let container = View.renderReview(windowCoords, targetCoords, address, mapTable, exsistReviews);                        
                 let submitBtn = document.querySelector('#submit');
                 let closeBtn = document.querySelector('#closeBtn');

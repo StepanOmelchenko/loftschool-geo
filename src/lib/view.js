@@ -1,9 +1,11 @@
 import temp from '../templates/review-temp.hbs';
-import Model from './model.js';
-import map from './map.js';
+import sliderTemp from '../templates/slider-temp.hbs';
 
 const container = document.createElement('div');
-container.classList.add('box');
+const slider = document.createElement('div');
+
+container.classList.add('window');
+slider.classList.add('slider');
 
 export default {
     renderReview(windowCoords, targetCoords, address, mapTable, reviews = []) {
@@ -16,6 +18,18 @@ export default {
         mapTable.appendChild(container);
 
         return container;
+    },
+
+    renderSlider(windowCoords, targetCoords, address, mapTable, reviews = []) {
+
+        slider.innerHTML = sliderTemp({ });
+
+        slider.style.left = windowCoords[0] + 'px';
+        slider.style.top = windowCoords[1] + 'px';
+        slider.draggable = true;
+        mapTable.appendChild(container);
+
+        return slider;
     },
 
     destroyChild(parent, child) {
