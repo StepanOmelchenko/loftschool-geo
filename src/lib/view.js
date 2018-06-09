@@ -21,15 +21,13 @@ export default {
     },
 
     addReview(container, review) {
-        //console.log(review);
         let elemLi = document.createElement('li');
         elemLi.classList.add('review__item');
-
         elemLi.innerHTML = singleReview({review});
 
         if (container) {
             let reviewsList = document.querySelector('#reviews-list');
-            //console.log(elemLi);
+            
             reviewsList.appendChild(elemLi);
         }
     },

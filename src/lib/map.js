@@ -1,9 +1,11 @@
 import View from './view.js';
 import Model from './model.js';
+import getClustererTemplate from './getClustererTemplate.js';
 
 export default (mapTable) => {
     let myMap;
     let storage = Model.getReviews();
+    let clusterer;
     console.log(storage);
 
     return new Promise(resolve => ymaps.ready(resolve))
@@ -17,14 +19,11 @@ export default (mapTable) => {
                 searchControlProvider: 'yandex#search'
             });
 
-            var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
-                '<div class=ballon__content><h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>' +
-                '<a href="#" class=ballon__link data-coord="{{ properties.balloonContentCoords|raw }}">{{ properties.balloonContentLink|raw }}</a>' +
-                '<div class=ballon__body>{{ properties.balloonContentBody|raw }}</div>' +
-                '<div class=ballon__footer>{{ properties.balloonContentFooter|raw }}</div></div>'
+            let customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+                getClustererTemplate()               
             );
 
-            let clusterer = new ymaps.Clusterer({
+            clusterer = new ymaps.Clusterer({
                 preset: 'islands#invertedVioletClusterIcons',
                 clusterDisableClickZoom: true,
                 clusterOpenBalloonOnClick: true,
@@ -47,7 +46,19 @@ export default (mapTable) => {
                     .then((address) => {
                         createContainer(windowCoords, targetCoords, address);
                     });
-            });            
+            });
+            
+            mapTable.addEventListener('click', (e) => {
+                if (e.target.dataset.coord) {
+                    let targetCoords = e.target.dataset.coord;
+                    let windowCoords = [e.clientX, e.clientY];
+
+                    getAddress(targetCoords)
+                        .then((address) => {
+                            createContainer(windowCoords, targetCoords, address);
+                        });
+                }
+            });
 
             function getAddress(coords) {
                 return ymaps.geocode(coords).then((res) => {
@@ -70,11 +81,10 @@ export default (mapTable) => {
                 icon.events.add('click', (e) => {
                     e.preventDefault();
                     let windowCoords = e.get('pagePixels');
-                    let targetCoords = coords;
 
-                    getAddress(targetCoords)
+                    getAddress(coords)
                         .then((address) => {
-                            createContainer(windowCoords, targetCoords, address);
+                            createContainer(windowCoords, coords, address);
                         });                    
                 });
 

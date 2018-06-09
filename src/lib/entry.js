@@ -5,3 +5,4 @@ const mapTable = document.querySelector('#map');
 
 DND.makeDND(mapTable);
 map(mapTable);
+
